@@ -50,11 +50,6 @@ export default function TimesheetsPage() {
     eventsService.getAll()
   }, [])
 
-  const handleTest = async(id: any) => {
-    // const db = await getDB();
-    // await db.run("DELETE FROM timesheets WHERE id = ?", id);
-  }
-
   const filteredTimesheets = timesheetsAndEmployees.filter((timesheet: any) => {
     const matchesId = timesheet.employee_id.toString().includes(employeeIdFilter);
     return matchesId;
@@ -79,7 +74,6 @@ export default function TimesheetsPage() {
                 <th>Start Time</th>
                 <th>End Time</th>
                 <th>Work Summary</th>
-                <th>Delete</th>
               </tr>
               {filteredTimesheets.map((timesheet: any) => (
                 <tr key={timesheet.id} className="rows">
@@ -88,7 +82,6 @@ export default function TimesheetsPage() {
                   <td>{timesheet.start_time}</td>
                   <td>{timesheet.end_time}</td>
                   <td>{timesheet.summary_work}</td>
-                  <td><button onClick={() => handleTest(timesheet.id)}>Delete</button></td>
                 </tr>
               ))}
             </table>

@@ -94,21 +94,21 @@ export default function EmployeePage() {
       isValid = false;
     }
 
-     // date of birth should be atleast 18
-     const dateOfBirth = new Date(dob);
-     const yearOfBirth = dateOfBirth.getFullYear();
-     const monthOfBirth = dateOfBirth.getMonth();
- 
-     const currentYear = new Date().getFullYear();
-     const currentMonth = new Date().getMonth();
- 
-     if(currentYear - yearOfBirth >= 18) {
-       if(currentMonth - monthOfBirth < 0) {
-         newErrors.greaterThan18 = "Must be atleast 18 years old.";
-         isValid = false;
-       }
-     }
+     // check minimum age of user
+    const dateOfBirth = new Date(dob);
+    const currentDate = new Date();
 
+    // Calculate the difference in years and months
+    const yearDifference = currentDate.getFullYear() - dateOfBirth.getFullYear();
+    const monthDifference = currentDate.getMonth() - dateOfBirth.getMonth();
+
+    // Check if the user is at least 18 years old
+    if (yearDifference < 18 || (yearDifference === 18 && monthDifference < 0)) {
+      newErrors.greaterThan18 = "Must be at least 18 years old.";
+      isValid = false;
+    }
+
+    // verify that end date is after start date
     const startTime = new Date(startDate);
     const endTime = new Date(endDate);
 
