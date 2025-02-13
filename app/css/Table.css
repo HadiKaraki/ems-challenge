@@ -1,0 +1,12 @@
+table {
+    width: 100%;
+ }
+ 
+ table .headings {
+     background-color: #1c434a;
+     color: white;
+ }
+ 
+ table .rows {
+     background-color: rgb(234, 227, 227);
+ }

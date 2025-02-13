@@ -1,0 +1,21 @@
+nav {
+    height: 80px;
+    background-color: rgb(241, 238, 238);
+    display: flex;
+    align-items: center;
+}
+
+nav ul {
+    flex: 1;
+    margin: 0 20px 0;
+}
+
+nav ul li {
+    display: inline-block;
+    line-height: 80px;
+    margin: 0 5px;
+}
+
+nav li a {
+    color: black;
+}

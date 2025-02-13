@@ -1,0 +1,11 @@
+.all-employees-container {
+    margin: 0 auto;
+    width: 60%;
+    margin-top: 5%;
+}
+
+.all-employees-container input[class="filter"] {
+    padding: 5px 15px 5px;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
