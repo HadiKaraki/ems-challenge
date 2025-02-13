@@ -64,8 +64,10 @@ export default function TimesheetsPage() {
     <>
       {timesheetsAndEmployees.length !== 0 ? (
       <div>
-        <button onClick={() => setViewCalender(false)}>Table View</button>
-        <button onClick={() => setViewCalender(true)}>Calendar View</button>
+        <div className="toggle-btns" style={{textAlign: 'center'}}>
+          <button onClick={() => setViewCalender(false)}>Table View</button>
+          <button onClick={() => setViewCalender(true)}>Calendar View</button>
+        </div>
         {!viewCalendar ? (
           <div className="all-timesheets-container">
             <h3 style={{textAlign: 'center'}}>All Timesheets</h3>
@@ -81,8 +83,8 @@ export default function TimesheetsPage() {
               </tr>
               {filteredTimesheets.map((timesheet: any) => (
                 <tr key={timesheet.id} className="rows">
-                  <td><a href={`/timesheets/${timesheet.id}`}>Timesheet #{timesheet.id}</a></td>
-                  <td><a href={`/employees/${timesheet.employee_id}`}>Employee #{timesheet.employee_id}</a></td>
+                  <td><a style={{color: 'black'}} href={`/timesheets/${timesheet.id}`}>Timesheet #{timesheet.id}</a></td>
+                  <td><a style={{color: 'black'}} href={`/employees/${timesheet.employee_id}`}>Employee #{timesheet.employee_id}</a></td>
                   <td>{timesheet.start_time}</td>
                   <td>{timesheet.end_time}</td>
                   <td>{timesheet.summary_work}</td>

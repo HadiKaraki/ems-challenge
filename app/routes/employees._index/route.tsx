@@ -44,7 +44,7 @@ export default function EmployeesPage() {
         {filteredEmployees.map((employee: any) => (
           <tr className='rows' key={employee.id}>
             <td>
-              <a href={`/employees/${employee.id}`}>Employee #{employee.id}</a>
+              <a style={{color: 'black'}} href={`/employees/${employee.id}`}>Employee #{employee.id}</a>
             </td>
             <td>{employee.full_name}</td>
             <td>{employee.email}</td>

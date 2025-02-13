@@ -1,4 +1,4 @@
-.new-data-form {
+.data-form {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -13,7 +13,14 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.new-data-form .row {
+.data-form select {
+    border-radius: 8px;
+    border: 1px solid grey;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.data-form .row {
     display: flex;
     align-items: center;
     margin: 15px 0;
@@ -21,27 +28,27 @@
     width: 100%;
 }
 
-.new-data-form .col {
+.data-form .col {
     display: flex;
     flex-direction: column;
     width: 48%; /* Slightly less than 50% to account for spacing */
 }
 
-.new-data-form h2 {
+.data-form h2 {
     font-size: 20px;
     font-weight: 600;
     color: #333;
     margin-bottom: 10px;
 }
 
-.new-data-form label {
+.data-form label {
     font-size: 14px;
     font-weight: 500;
     color: #555;
     margin-bottom: 5px;
 }
 
-.new-data-form input {
+.data-form input {
     padding: 10px;
     font-size: 14px;
     border-radius: 8px;
@@ -50,12 +57,12 @@
     transition: border-color 0.3s ease;
 }
 
-.new-data-form input:focus {
+.data-form input:focus {
     border-color: #5288c7;
     outline: none;
 }
 
-.new-data-form button {
+.data-form button {
     border-radius: 8px;
     background-color: #5288c7;
     border: 1px solid #5288c7;
@@ -69,11 +76,11 @@
     margin-top: 10px;
 }
 
-.new-data-form button:hover {
+.data-form button:hover {
     background-color: #3a6da7;
 }
 
-.new-data-form .text-danger {
+.data-form .text-danger {
     color: red;
     font-size: 12px;
     margin-top: 5px;

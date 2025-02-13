@@ -1,4 +1,4 @@
-import '../../css/UpdateEmployee.css'
+import '../../css/FormStyling.css'
 import { useLoaderData, useParams, type LoaderFunctionArgs } from "react-router";
 import { useState } from 'react';
 import { getDB } from "~/db/getDB";
@@ -58,16 +58,22 @@ export default function EmployeePage() {
   const { employeeId } = useParams();
   const [email, setEmail] = useState(employee.email);
   const [phoneNb, setPhoneNb] = useState(employee.phone_nb);
+  const [salary, setSalary] = useState(employee.salary);
+  const [dob, setDob] = useState(employee.date_of_birth);
+  const [startDate, setStartDate] = useState(employee.start_date);
+  const [endDate, setEndDate] = useState(employee.end_date);
     
   const [errors, setErrors] = useState({
-    // fullName: "",
     email: "",
     phoneNb: "",
+    minSalary: "",
+    timeError: "",
+    greaterThan18: ""
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let newErrors = { fullName: "", email: "", phoneNb: "" };
+    let newErrors = { email: "", phoneNb: "", minSalary: "", timeError: "", greaterThan18: "" };
     let isValid = true;
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -82,10 +88,40 @@ export default function EmployeePage() {
       isValid = false;
     }
 
+     // min wage should be $900
+     if (parseInt(salary) < 900) {
+      newErrors.minSalary = "Salary much be atleast $900.";
+      isValid = false;
+    }
+
+     // date of birth should be atleast 18
+     const dateOfBirth = new Date(dob);
+     const yearOfBirth = dateOfBirth.getFullYear();
+     const monthOfBirth = dateOfBirth.getMonth();
+ 
+     const currentYear = new Date().getFullYear();
+     const currentMonth = new Date().getMonth();
+ 
+     if(currentYear - yearOfBirth >= 18) {
+       if(currentMonth - monthOfBirth < 0) {
+         newErrors.greaterThan18 = "Must be atleast 18 years old.";
+         isValid = false;
+       }
+     }
+
+    const startTime = new Date(startDate);
+    const endTime = new Date(endDate);
+
+    if (endTime < startTime) {
+        newErrors.timeError = "End time is before start time!";
+        isValid = false;
+    } else if (endTime === startTime){
+        newErrors.timeError = "End time is the same as start time!";
+        isValid = false;
+    }
+
     setErrors(newErrors);
-
     if (!isValid) return;
-
     e.currentTarget.submit();
   };
 
@@ -94,7 +130,7 @@ export default function EmployeePage() {
       <div>
         <h2 style={{textAlign: 'center'}}>Employee #{employeeId}</h2>
         {employee ? (
-          <Form method="post" className='new-employee-form' onSubmit={handleSubmit}>
+          <Form method="post" className='data-form' onSubmit={handleSubmit}>
             <div className="row">
               <h2>Personal Info</h2>
             </div>
@@ -117,7 +153,8 @@ export default function EmployeePage() {
               </div>
               <div className="col">
                 <label htmlFor="date_of_birth">Date of birth</label>
-                <input type='date' name='date_of_birth' defaultValue={employee.date_of_birth} id='date_of_birth'></input>
+                <input type='date' name='date_of_birth' value={dob} onChange={(e) => setDob(e.target.value)} id='date_of_birth'></input>
+                {errors.greaterThan18 && <p style={{ color: "red" }}>{errors.greaterThan18}</p>}
               </div>
             </div>
             <div className="row">
@@ -134,17 +171,19 @@ export default function EmployeePage() {
               </div>
               <div className="col">
                 <label htmlFor="salary">Salary</label>
-                <input type="text" name="salary" defaultValue={employee.salary} id="salary" required />
+                <input type="text" name="salary" defaultValue={employee.salary} onChange={(e) => setSalary(e.target.value)} id="salary" required />
+                {errors.minSalary && <p style={{ color: "red" }}>{errors.minSalary}</p>}
               </div>
             </div>
             <div className="row">
               <div className="col">
                 <label htmlFor='start_date'>Start date</label>
-                <input type='date' name='start_date' defaultValue={employee.start_date} id='start_date'></input>
+                <input type='date' onChange={(e) => setStartDate(e.target.value)} name='start_date' value={startDate} id='start_date'></input>
               </div>
               <div className="col">
                 <label htmlFor="end_date">End date</label>
-                <input type='date' name='end_date' defaultValue={employee.end_date} id='end_date'></input>
+                <input type='date' onChange={(e) => setEndDate(e.target.value)} name='end_date' value={endDate} id='end_date'></input>
+                {errors.timeError && <p style={{ color: "red" }}>{errors.timeError}</p>}
               </div>
             </div>
             <input type="number" name="employee_id" value={employeeId} style={{display: 'none'}}></input>

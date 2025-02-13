@@ -1,3 +1,4 @@
+import '../../css/FormStyling.css'
 import { useLoaderData, useParams, type LoaderFunctionArgs } from "react-router";
 import { useState } from 'react';
 import { getDB } from "~/db/getDB";
@@ -35,33 +36,66 @@ export default function TimesheetPage() {
   const { employees } = useLoaderData();
   const { timesheet } = useLoaderData();
   const { timesheetId } = useParams();
+  const [startDate, setStartDate] = useState(timesheet.start_time);
+  const [endDate, setEndDate] = useState(timesheet.end_time);
+  const [timeError, setTimeError] = useState('');
+  
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      let isValid = true;
+  
+      const startTime = new Date(startDate);
+      const endTime = new Date(endDate);
+  
+      if (endTime < startTime) {
+          setTimeError("End time is before start time!");
+          isValid = false;
+      } else if (endTime === startTime){
+          setTimeError("End time is the same as start time!");
+          isValid = false;
+      }
+  
+      if (!isValid) return;
+      e.currentTarget.submit();
+  };
 
   return (
     <div>
       <h2 style={{textAlign: 'center'}}>Timesheet #{timesheetId}</h2>
-      <Form method="post">
+      <Form method="post" className='data-form' onSubmit={handleSubmit}>
         <div>
           <h2>Update Timesheet</h2>
-          <select name="employee_id" id="employee_id" required>
-            <option defaultValue={timesheet.employee_id}>Select an Employee</option>
-            {employees.map((employee: any) => (
-              <option key={employee.id} value={employee.id}>
-                {employee.full_name}
-              </option>
-            ))}
-          </select>
+          <div className="row">
+            <div className="col">
+              <label>Select Employee</label>
+              <select value={timesheet.employee_id} name="employee_id" id="employee_id" required>
+                {employees.map((employee: any) => (
+                  <option key={employee.id} value={employee.id}>
+                    {employee.full_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
-        <div>
-          <label htmlFor="start_time">Start Time</label>
-          <input type="datetime-local" defaultValue={timesheet.start_time} name="start_time" id="start_time" required />
+        <div className='row'>
+          <div className="col" style={{width: '100%'}}>
+            <label htmlFor="start_time">Start Time</label>
+            <input type="datetime-local" onChange={(e) => setStartDate(e.target.value)} value={startDate} name="start_time" id="start_time" required />
+          </div>
         </div>
-        <div>
-          <label htmlFor="end_time">End Time</label>
-          <input type="datetime-local" defaultValue={timesheet.end_time} name="end_time" id="end_time" required />
+        <div className='row'>
+          <div className="col" style={{width: '100%'}}>
+            <label htmlFor="end_time">End Time</label>
+            <input type="datetime-local" onChange={(e) => setEndDate(e.target.value)} value={endDate} name="end_time" id="end_time" required />
+            {timeError && <p style={{ color: "red" }}>{timeError}</p>}
+          </div>
         </div>
-        <div>
-          <label htmlFor="summary_work">Summary Work</label>
-          <textarea name="summary_work" defaultValue={timesheet.summary_work} id="summary_work" required />
+        <div className='row'>
+          <div className="col" style={{width: '100%'}}>
+            <label htmlFor="summary_work">Summary Work</label>
+            <textarea style={{width: '100%'}} defaultValue={timesheet.summary_work} name="summary_work" id="summary_work" required />
+          </div>
         </div>
         <input value={timesheet.id} name="timesheet_id" style={{display: 'none'}}></input>
         <button type="submit">Update Timesheet</button>

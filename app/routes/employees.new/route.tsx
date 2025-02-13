@@ -37,40 +37,22 @@ export const action: ActionFunction = async ({ request }) => {
 export default function NewEmployeePage() {
   const [email, setEmail] = useState("");
   const [phoneNb, setPhoneNb] = useState("");
-  const [dob, setDob] = useState<string>("");
-  const [above18Error, setAbove18Error] =  useState<{ above_18?: string }>({});
+  const [salary, setSalary] = useState("");
+  const [dob, setDob] = useState("");
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   
   const [errors, setErrors] = useState({
-      // fullName: "",
       email: "",
       phoneNb: "",
-      above_18: ""
+      minSalary: "",
+      timeError: "",
+      greaterThan18: ""
   });
-
-  function calculateAge(dateOfBirth: string): number {
-    const dob = new Date(dateOfBirth);
-    const today = new Date();
-  
-    let age = today.getFullYear() - dob.getFullYear();
-  
-    return age;
-  }
-
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedDate = e.target.value;
-    setDob(selectedDate);
-
-    if (calculateAge(selectedDate) < 18) {
-      setAbove18Error({ above_18: "Should be at least 18 years old." });
-    } else {
-      setAbove18Error({});
-    }
-  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // let newErrors = { fullName: "", email: "", phoneNb: "" };
-    let newErrors = { email: "", phoneNb: "", above_18: "" };
+    let newErrors = { email: "", phoneNb: "", minSalary: "", timeError: "", greaterThan18: "" };
     let isValid = true;
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -85,21 +67,48 @@ export default function NewEmployeePage() {
       isValid = false;
     }
 
-    if(calculateAge(dob)<18) {
-      newErrors.above_18 = "Should be atleast 18 years old."
+    // min wage should be $900
+    if (parseInt(salary) < 900) {
+      newErrors.minSalary = "Salary much be atleast $900.";
+      isValid = false;
+    }
+
+    // date of birth should be atleast 18
+    const dateOfBirth = new Date(dob);
+    const yearOfBirth = dateOfBirth.getFullYear();
+    const monthOfBirth = dateOfBirth.getMonth();
+
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth();
+
+    if(currentYear - yearOfBirth >= 18) {
+      if(currentMonth - monthOfBirth < 0) {
+        newErrors.greaterThan18 = "Must be atleast 18 years old.";
+        isValid = false;
+      }
+    }
+
+    // verify that end date is after start date
+    const startTime = new Date(startDate);
+    const endTime = new Date(endDate);
+
+    if (endTime < startTime) {
+        newErrors.timeError = "End time is before start time!";
+        isValid = false;
+    } else if (endTime === startTime){
+        newErrors.timeError = "End time is the same as start time!";
+        isValid = false;
     }
 
     setErrors(newErrors);
-
     if (!isValid) return;
-
     e.currentTarget.submit();
   };
 
   return (
     <div>
       <h2 style={{textAlign: 'center'}}>Create New Employee</h2>
-      <Form method="post" className='new-data-form' onSubmit={handleSubmit}>
+      <Form method="post" className='data-form' onSubmit={handleSubmit}>
         <div className="row">
           <h2>Personal Info</h2>
         </div>
@@ -122,14 +131,8 @@ export default function NewEmployeePage() {
           </div>
           <div className="col">
             <label htmlFor="date_of_birth">Date of birth</label>
-            <input
-              type="date"
-              name="date_of_birth"
-              onChange={handleDateChange}
-              id="date_of_birth"
-              value={dob}
-            />
-            {above18Error.above_18 && <p style={{ color: "red" }}>{above18Error.above_18}</p>}
+            <input type="date" onChange={(e) => setDob(e.target.value)} value={dob} name="date_of_birth" id="date_of_birth" required/>
+            {errors.greaterThan18 && <p style={{ color: "red" }}>{errors.greaterThan18}</p>}
           </div>
         </div>
         <div className="row">
@@ -146,17 +149,19 @@ export default function NewEmployeePage() {
           </div>
           <div className="col">
             <label htmlFor="salary">Salary</label>
-            <input type="text" name="salary" id="salary" required />
+            <input type="text" name="salary" id="salary" onChange={(e) => setSalary(e.target.value)} required />
+            {errors.minSalary && <p style={{ color: "red" }}>{errors.minSalary}</p>}
           </div>
         </div>
         <div className="row">
           <div className="col">
             <label htmlFor='start_date'>Start date</label>
-            <input type='date' name='start_date' id='start_date'></input>
+            <input type='date' onChange={(e) => setStartDate(e.target.value)} value={startDate} name='start_date' id='start_date'></input>
           </div>
           <div className="col">
             <label htmlFor="end_date">End date</label>
-            <input type='date' name='end_date' id='end_date'></input>
+            <input type='date' onChange={(e) => setEndDate(e.target.value)} value={endDate} name='end_date' id='end_date'></input>
+            {errors.timeError && <p style={{ color: "red" }}>{errors.timeError}</p>}
           </div>
         </div>
         <div className="row">
